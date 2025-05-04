@@ -27,7 +27,7 @@ namespace tomb.Controllers
             const int tombCount = 100;
 
             _logger.LogInformation($"Fetching ALL (Max {tombCount}) tombs for current user.");
-
+            
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
             {
@@ -45,7 +45,7 @@ namespace tomb.Controllers
             try
             {
                 List<TombOwnerDTO> data = await _db.Tombs
-                   .Where(t => t.UserId == Guid.Parse(userId))
+                   .Where(t => t.UserId == Guid.Parse(userId)).OrderByDescending(t => t.Id)
                    .Take(tombCount)
                    .Select(t => t.ToTombOwnerDTO())
                    .ToListAsync();

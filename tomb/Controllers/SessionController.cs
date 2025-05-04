@@ -9,7 +9,7 @@ using tomb.Validation;
 
 namespace tomb.Controllers
 {
-    [ApiController, Route("session"), Authorize, EnableRateLimiting(policyName: "InteractionControllerRateLimit")] //TODO: Add rate limitter
+    [ApiController, Route("session"), Authorize] //TODO: Add rate limitter
     public class SessionController(ApplicationDBContext db, ILogger<SessionController> logger, SignInManager<User> signInManager, UserManager<User> userManager) : ControllerBase
     {
         private readonly ILogger<SessionController> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -30,8 +30,6 @@ namespace tomb.Controllers
             if (UserRequested == null)
                 return NotFound(new { message = "Something went wrong!" });
 
-            _logger.LogInformation($"User {UserRequested.UserName} has tried to log out.");
-
             await _signInManager.SignOutAsync();
 
             _logger.LogInformation($"User: [Id: {UserRequested.Id}, Username: {UserRequested.UserName}] successfully logged out.");
@@ -42,7 +40,9 @@ namespace tomb.Controllers
         [HttpPut, Route("update")]
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileModel model)
         {
-
+            Console.WriteLine(model.Name);
+            Console.WriteLine(model.Surname);
+            Console.WriteLine(model.Username);
 
             string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 

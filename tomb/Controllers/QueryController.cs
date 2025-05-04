@@ -45,7 +45,7 @@ namespace tomb.Controllers
                                   .AsNoTracking()
                                   .Take(takeCount)
                                   .Include(t => t.User)
-                                  .Select(tt => tt.ToTombOwnerTO())
+                                  .Select(tt => tt.ToTombOwnerDTO())
                                   .ToListAsync();
 
 

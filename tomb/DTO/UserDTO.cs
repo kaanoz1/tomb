@@ -48,7 +48,8 @@ namespace tomb.DTO
 
         public required DateTime LastActive { get; set; }
 
-        public required int TombCount { get; set; }
+        public required List<TombOwnDTO> Tombs { get; set; }
+
         public List<string> Roles { get; set; } = [];
     }
 
@@ -64,9 +65,9 @@ namespace tomb.DTO
     {
         public static UserDTO ToUserDTO(this User user) => new() { CreatedAt = user.CreatedAt, Id = user.Id, Image = user.Image, Name = user.Name, Surname = user.Surname, Username = user.UserName };
 
-        public static UserFetchDTO ToUserFetchDTO(this User user, List<string>? roles = null) => new() { CreatedAt = user.CreatedAt, Id = user.Id, Image = user.Image, Name = user.Name, Surname = user.Surname, Username = user.UserName, TombCount = user.Tombs.Count, LastActive = user.LastActive, Roles = roles ?? [] };
+        public static UserFetchDTO ToUserFetchDTO(this User user, List<string>? roles = null) => new() { CreatedAt = user.CreatedAt, Id = user.Id, Image = user.Image, Name = user.Name, Surname = user.Surname, Username = user.UserName, Tombs = user.Tombs.Select(t => t.ToTombOwnDTO()).ToList(), LastActive = user.LastActive, Roles = roles ?? [] };
          
-        public static UserOwnDTO ToUserOwnDTO(this User user, List<string>? roles = null) => new () { CreatedAt = user.CreatedAt, Id = user.Id, Image = user.Image, Name = user.Name, Surname = user.Surname, Username = user.UserName, TombCount = user.Tombs.Count, LastActive = user.LastActive, Email = user.Email, EmailConfirmedFrom = user.EmailVerified, Roles = roles ?? [] };
+        public static UserOwnDTO ToUserOwnDTO(this User user, List<string>? roles = null) => new () { CreatedAt = user.CreatedAt, Id = user.Id, Image = user.Image, Name = user.Name, Surname = user.Surname, Username = user.UserName, Tombs = user.Tombs.Select(t => t.ToTombOwnDTO()).ToList(), LastActive = user.LastActive, Email = user.Email, EmailConfirmedFrom = user.EmailVerified, Roles = roles ?? [] };
 
         public static UserQueryDTO ToUserQueryDTO(this User user, List<string>? roles = null) => new() { Image = user.Image, Name = user.Name, Surname = user.Surname, Username = user.UserName, Roles = roles ?? [] };
 

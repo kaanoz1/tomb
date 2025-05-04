@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using tomb.DB;
@@ -58,7 +59,7 @@ namespace tomb.Controllers
 
             if (Result.Errors.Any(e => e.Code == "DuplicateUserName"))
             {
-                _logger.LogInformation($"Registration failed: Duplicated username tried to be created.  Duplicated username {userCreated.UserName} Email: {userCreated.Email}");
+                _logger.LogInformation($"Registration failed: Duplicated username tried to be created. Duplicated Username: {userCreated.UserName} Email: {userCreated.Email}");
                 return Conflict(new { message = "Username already exists." });
             }
 
@@ -71,7 +72,7 @@ namespace tomb.Controllers
             foreach (IdentityError error in Result.Errors)
                 _logger.LogWarning($"Registration failed: {error.Code} - {error.Description}");
 
-            return BadRequest(Result.Errors);
+            return BadRequest(new { message = string.Join(", ", Result.Errors.Select(e => e.Description).ToList()) });
         }
 
         [HttpPost, Route("login")]
@@ -120,3 +121,4 @@ namespace tomb.Controllers
         }
     }
 }
+    

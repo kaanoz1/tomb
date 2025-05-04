@@ -78,7 +78,7 @@ namespace tomb.Utility
 
         public static IRuleBuilderOptions<T, string> AuthenticationEmailRules<T>(this IRuleBuilder<T, string> ruleBuilder)
         {
-            return ruleBuilder
+            return ruleBuilder.NotNull()
                 .NotEmpty().WithMessage("Email is required.")
                 .MaximumLength(255).WithMessage("Email cannot exceed 255 characters.")
                 .EmailAddress().WithMessage("Invalid email address format.");
@@ -136,7 +136,7 @@ namespace tomb.Utility
             {
                 using var stream = file.OpenReadStream();
                 using var image = Image.Load(stream);
-                return image.Width == image.Height && image.Width == requiredWidth && image.Height == requiredHeight;
+                return image.Width == image.Height && image.Width < requiredWidth && image.Height < requiredHeight;
             }
             catch
             {

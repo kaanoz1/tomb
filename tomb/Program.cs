@@ -47,7 +47,7 @@ builder.Services.AddIdentity<User, Role>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequiredUniqueChars = 0;
     options.Password.RequiredLength = 6;
-    options.User.AllowedUserNameCharacters = "abcçdefgðhýijklmnoöpqrstuüvyz0123456789._";
+    options.User.AllowedUserNameCharacters = "abcçdefgðhýijklmnoöpqrstuüvyz0123456789.";
 })
     .AddEntityFrameworkStores<ApplicationDBContext>()
     .AddDefaultTokenProviders();
@@ -68,7 +68,7 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.SecurePolicy = CookieSecurePolicy.None;
     options.Cookie.SameSite = SameSiteMode.Strict;
-    options.Cookie.Name = "sessionB";
+    options.Cookie.Name = "session";
 });
 
 builder.Services.AddFluentValidationAutoValidation();
@@ -84,7 +84,17 @@ builder.Services.AddControllers()
         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
     });
 
-
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy
+            .SetIsOriginAllowed(origin => true) // Tüm originlere izin verir (geçici)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); // Cookie gönderimi için gerekli!
+    });
+});
 
 var app = builder.Build();
 
@@ -97,6 +107,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
